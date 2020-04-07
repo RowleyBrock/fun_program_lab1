@@ -22,13 +22,14 @@ l <- list(a = list(m = matrix(1:12, ncol = 3),
 ## From the model results:
 ### Extract the qr tolerance (tol)
 ```{r extract_qr_tol, include = TRUE}
-
+str(m)
+m$qr$tol
 ```
 
 ### Extract the term labels from the model  
 *Hint:* Use str to inspect the list. This one is tricky and involves pulling an attribute from an attribute.
 ```{r extract_term_labels, include = TRUE}
-
+str(m$model)
 ```
 
 ## From the list:
@@ -72,10 +73,29 @@ Use the “airquality” dataset, which is part of base R.
 
 ### Produce separate plots showing the relation between Ozone and Solar.R for each month (with a single loop)
 ```{r plots_Ozone_Solar}
-
+#Just Sample Code. NOT Working, YET!
+somePlotName <- lapply(by_month, function(x) {
+    ggplot(x, aes(Ozone, Solar.R)) +
+        geom_point() +
+        geom_smooth()
+})
 ```
 
 ### Use a for loop to save the plots to a folder on your computer
 ```{r save_plots, include = TRUE}
+#Just Sample Code. NOT Working, YET!
+dir.create(here::here("plots"))
 
+solar_ozone <- here::here("plots",
+                          paste0("ozone",
+                                 names(by_month),
+                                 ".png"))
+solar_ozone
+
+for(i in seq_along(somePlotName)) {
+  ggsave(solar_ozone[i], # single bracket
+         somePlotName[[i]], # double bracket
+         width = 6.5,
+         height = 8)
+  }
 ```
