@@ -5,11 +5,9 @@ date: "4/6/2020"
 output: html_document
 ---
 
-# The purpose of this lab is:  
-Get you working with base R looping functions while also being careful about data types.
+## The purpose of this lab is to get you working with base R looping functions while also being careful about data types.
 ## Run this code:
-```{r Data_structures, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r Data_structures, include = TRUE}
 
 set.seed(123) # Set random number generation
 
@@ -23,61 +21,61 @@ l <- list(a = list(m = matrix(1:12, ncol = 3),
 
 ## From the model results:
 ### Extract the qr tolerance (tol)
-```{r extract_qr_tol}
+```{r extract_qr_tol, include = TRUE}
 
 ```
 
 ### Extract the term labels from the model  
 *Hint:* Use str to inspect the list. This one is tricky and involves pulling an attribute from an attribute.
-```{r extract_term_labels}
+```{r extract_term_labels, include = TRUE}
 
 ```
 
 ## From the list:
-### Use at least two different methods to extract m.
-```{r method_one_extract_m}
+### Use at least two different methods to extract m
+```{r method_one_extract_m, include = TRUE}
 
 ```
 
-```{r method_two_extract_m}
+```{r method_two_extract_m, include = TRUE}
 
 ```
 
-### Extract the third column of m.  
+### Extract the third column of m  
 Maintain the dimensions (matrix structure).
-```{r extract_third_column_m}
+```{r extract_third_column_m, include = TRUE}
 
 ```
 
-### Extract the score for student 7.
-```{r extract_student7_score}
+### Extract the score for student 7
+```{r extract_student7_score, include = TRUE}
 
 ```
 
-##Loops
-Use the “airquality” dataset, which is part of base R  
+## Loops  
+Use the “airquality” dataset, which is part of base R.
+
 ### Split it by Month
-```{r split_month}
+```{r split_month, include = TRUE}
 
 ```
 
 ### Use a for loop to calculate the mean Ozone by month (remember to remove missing data from the calculation)
-```{r mean_Ozone}
+```{r mean_Ozone, include = TRUE}
 
 ```
 
 ### Replicate this calculation with lapply, sapply, and vapply
-```{r replicate_calculation}
+```{r replicate_calculation, include = TRUE}
 
 ```
 
-### Produce separate plots showing the relation between Ozone and Solar.R for each month (with a single loop).
+### Produce separate plots showing the relation between Ozone and Solar.R for each month (with a single loop)
 ```{r plots_Ozone_Solar}
 
 ```
 
 ### Use a for loop to save the plots to a folder on your computer
-```{r save_plots}
+```{r save_plots, include = TRUE}
 
 ```
-
