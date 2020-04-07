@@ -1,11 +1,14 @@
 ---
 title: "Lab1"
-author: "Brock Rowley"
+author: ""
 date: "4/6/2020"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+# The purpose of this lab is:  
+Get you working with base R looping functions while also being careful about data types.
+## Run this code:
+```{r Data_structures, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 set.seed(123) # Set random number generation
@@ -18,22 +21,63 @@ l <- list(a = list(m = matrix(1:12, ncol = 3),
                          score = rnorm(15, 100, 10)))
 ```
 
-## R Markdown
+## From the model results:
+### Extract the qr tolerance (tol)
+```{r extract_qr_tol}
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
 ```
 
-## Including Plots
+### Extract the term labels from the model  
+*Hint:* Use str to inspect the list. This one is tricky and involves pulling an attribute from an attribute.
+```{r extract_term_labels}
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## From the list:
+### Use at least two different methods to extract m.
+```{r method_one_extract_m}
+
+```
+
+```{r method_two_extract_m}
+
+```
+
+### Extract the third column of m.  
+Maintain the dimensions (matrix structure).
+```{r extract_third_column_m}
+
+```
+
+### Extract the score for student 7.
+```{r extract_student7_score}
+
+```
+
+##Loops
+Use the “airquality” dataset, which is part of base R  
+### Split it by Month
+```{r split_month}
+
+```
+
+### Use a for loop to calculate the mean Ozone by month (remember to remove missing data from the calculation)
+```{r mean_Ozone}
+
+```
+
+### Replicate this calculation with lapply, sapply, and vapply
+```{r replicate_calculation}
+
+```
+
+### Produce separate plots showing the relation between Ozone and Solar.R for each month (with a single loop).
+```{r plots_Ozone_Solar}
+
+```
+
+### Use a for loop to save the plots to a folder on your computer
+```{r save_plots}
+
+```
+
