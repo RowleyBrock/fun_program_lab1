@@ -5,26 +5,132 @@ date: "4/8/2020"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+---
+title: "Lab1"
+author: ""
+date: "4/6/2020"
+output: html_document
+---
+
+
+```{r Data_structures, include = TRUE}
+
+set.seed(123) # Set random number generation
+
+m <- lm(mpg ~ hp + cyl + drat, mtcars)
+
+l <- list(a = list(m = matrix(1:12, ncol = 3),
+                   v = 1:7),
+          b = data.frame(student = 1:15,
+                         score = rnorm(15, 100, 10)))
+
 ```
 
-## R Markdown
+## From the model results:
+### Extract the qr tolerance (tol)
+```{r extract_qr_tol, include = TRUE}
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+m$qr$tol
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
 ```
 
-## Including Plots
+### Extract the term labels from the model  
+*Hint:* Use str to inspect the list. This one is tricky and involves pulling an attribute from an attribute.
+```{r extract_term_labels, include = TRUE}
 
-You can also embed plots, for example:
+terms <- attr(m$model, "terms")
+attributes(terms)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+attr(terms, "term.labels")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## From the list:
+### Use at least two different methods to extract m
+```{r method_one_extract_m, include = TRUE}
+#1
+l$a$m
+
+#2
+t <- l[["a"]]
+t[["m"]]
+
+#3
+zoom <- l[["a"]][["m"]]
+
+```
+
+##extract third column of m
+```{r method_two_extract_m, include = TRUE}
+typeof(zoom)
+zoom
+#removes structure and re-adds matrix structure
+as.matrix(zoom[,3])
+
+#do not drop the structure/dimensions
+zoom[,3, drop=FALSE]
+
+```
+
+
+### Extract the score for student 7
+```{r extract_student7_score, include = TRUE}
+#method 1
+library(tidyverse)
+as.data.frame(l[["b"]]) %>% 
+filter(student == "7")
+
+#method2
+ob <- l[["b"]]
+ob[7,2]
+
+```
+
+## Loops  
+Use the “airquality” dataset, which is part of base R.
+
+### Split it by Month
+```{r split_month, include = TRUE}
+
+airquality
+
+```
+
+### Use a for loop to calculate the mean Ozone by month (remember to remove missing data from the calculation)
+```{r mean_Ozone, include = TRUE}
+
+```
+
+### Replicate this calculation with lapply, sapply, and vapply
+```{r replicate_calculation, include = TRUE}
+
+```
+
+### Produce separate plots showing the relation between Ozone and Solar.R for each month (with a single loop)
+```{r plots_Ozone_Solar}
+#Just Sample Code. NOT Working, YET!
+somePlotName <- lapply(by_month, function(x) {
+    ggplot(x, aes(Ozone, Solar.R)) +
+        geom_point() +
+        geom_smooth()
+})
+```
+
+### Use a for loop to save the plots to a folder on your computer
+```{r save_plots, include = TRUE}
+#Just Sample Code. NOT Working, YET!
+dir.create(here::here("plots"))
+
+solar_ozone <- here::here("plots",
+                          paste0("ozone",
+                                 names(by_month),
+                                 ".png"))
+solar_ozone
+
+for(i in seq_along(somePlotName)) {
+  ggsave(solar_ozone[i], # single bracket
+         somePlotName[[i]], # double bracket
+         width = 6.5,
+         height = 8)
+  }
+```
