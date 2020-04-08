@@ -1,0 +1,6 @@
+---
+title: "Stephanie_Lab1"
+author: "Stephanie Gluck"
+date: "4/8/2020"
+output: html_document
+---
