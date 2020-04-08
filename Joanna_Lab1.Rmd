@@ -30,26 +30,58 @@ m$qr$tol
 *Hint:* Use str to inspect the list. This one is tricky and involves pulling an attribute from an attribute.
 ```{r extract_term_labels, include = TRUE}
 str(m$model)
+
+# attributes lists the attributes of an object
+# attr extracts attributes out 
+
+# extracting "term" attributes and assigning them as object:
+terms <- attr(m$model, "term")
+
+# viewing attributes of "terms":
+attributes(terms)
+
+# extracting "term label" attributes from "terms"
+attr(terms, "term.labels")
+
 ```
 
 ## From the list:
 ### Use at least two different methods to extract m
 ```{r method_one_extract_m, include = TRUE}
 
+l$a$m
+
 ```
 
 ```{r method_two_extract_m, include = TRUE}
 
+t <- l[["a"]]
+t[["m"]]
+
+# OR, this works too:
+
+l[["a"]][["m"]]
 ```
 
 ### Extract the third column of m  
 Maintain the dimensions (matrix structure).
 ```{r extract_third_column_m, include = TRUE}
 
+str(m)
+typeof(m2)
+
+m2 <- l[["a"]][["m"]]
+
+# drop=FALSE tells it to maintain dimension structure after doing the subsetting. 
+m2[ ,3, drop=FALSE]
+
 ```
 
 ### Extract the score for student 7
 ```{r extract_student7_score, include = TRUE}
+
+l2 <- l[["b"]]
+l2[7,2]
 
 ```
 
