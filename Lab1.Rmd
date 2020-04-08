@@ -22,35 +22,55 @@ l <- list(a = list(m = matrix(1:12, ncol = 3),
 ## From the model results:
 ### Extract the qr tolerance (tol)
 ```{r extract_qr_tol, include = TRUE}
+
 str(m)
-m$qr$tol
+tolerance <- m$qr$tol
+tolerance
+
 ```
 
 ### Extract the term labels from the model  
 *Hint:* Use str to inspect the list. This one is tricky and involves pulling an attribute from an attribute.
 ```{r extract_term_labels, include = TRUE}
-str(m$model)
+
+terms <- attr(m$model, "term")
+attributes(terms)
+attr(terms, "term.labels")
+#attr(attr(m$model, "term"), "term.labels")
 ```
 
 ## From the list:
 ### Use at least two different methods to extract m
 ```{r method_one_extract_m, include = TRUE}
 
+l$a$m
 ```
 
 ```{r method_two_extract_m, include = TRUE}
 
+t <- l[["a"]]
+r <- t[["m"]]
+r
 ```
 
 ### Extract the third column of m  
 Maintain the dimensions (matrix structure).
 ```{r extract_third_column_m, include = TRUE}
 
+typeof(r)
+r
+as.matrix(r[ , 3])
 ```
 
 ### Extract the score for student 7
 ```{r extract_student7_score, include = TRUE}
 
+ob <- l[["b"]]
+        ob[7,2]
+
+#library(tidyverse)
+#as.data.frame(l[["b"]]) %>%
+  #filter(student == "7")
 ```
 
 ## Loops  
