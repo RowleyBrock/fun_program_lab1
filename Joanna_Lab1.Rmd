@@ -1,12 +1,14 @@
 ---
 title: "Lab1"
-author: ""
+author: "Joanna"
 date: "4/6/2020"
 output: html_document
 ---
 
 ## The purpose of this lab is to get you working with base R looping functions while also being careful about data types.
 ## Run this code:
+
+
 ```{r Data_structures, include = TRUE}
 
 set.seed(123) # Set random number generation
@@ -22,7 +24,7 @@ l <- list(a = list(m = matrix(1:12, ncol = 3),
 ## From the model results:
 ### Extract the qr tolerance (tol)
 ```{r extract_qr_tol, include = TRUE}
-str(m)
+# str(m)
 m$qr$tol
 ```
 
@@ -38,7 +40,7 @@ str(m$model)
 terms <- attr(m$model, "term")
 
 # viewing attributes of "terms":
-attributes(terms)
+# attributes(terms)
 
 # extracting "term label" attributes from "terms"
 attr(terms, "term.labels")
@@ -67,8 +69,8 @@ l[["a"]][["m"]]
 Maintain the dimensions (matrix structure).
 ```{r extract_third_column_m, include = TRUE}
 
-str(m)
-typeof(m2)
+# str(m)
+# typeof(m)
 
 m2 <- l[["a"]][["m"]]
 
@@ -91,43 +93,74 @@ Use the “airquality” dataset, which is part of base R.
 ### Split it by Month
 ```{r split_month, include = TRUE}
 
+# airquality
+month_split <- split(airquality, airquality$Month)
+# str(month_split)
+
 ```
 
 ### Use a for loop to calculate the mean Ozone by month (remember to remove missing data from the calculation)
 ```{r mean_Ozone, include = TRUE}
+
+d2 <- rep(NA, length(month_split))
+# tells d2 to repeat iterations for the length of month_split(so in this case, 5  times)
+
+for(i in seq_along(d2)) 
+  d2[i] <- mean(month_split[[i]][["Ozone"]], na.rm = TRUE) 
+
+# in other words: for every iteration in the sequence (length already defined by  d2), calculate the mean for ozone, removing the NAs
+
+d2 # need to call d2 because we filled it with the means 
 
 ```
 
 ### Replicate this calculation with lapply, sapply, and vapply
 ```{r replicate_calculation, include = TRUE}
 
+# lapply
+l <-lapply(month_split, function(x) mean(x$Ozone, na.rm=TRUE))
+# str(l)
+
+#  sapply simplifies output when possible
+s <- sapply(month_split, function(x) mean(x$Ozone, na.rm=TRUE))
+# str(s) to check out format of output
+
+# vapply requires that we specify output type, here specified as double
+v <- vapply(month_split, function(x) mean(x$Ozone, na.rm=TRUE), FUN.VALUE = double(1))
+# str(v) 
+
 ```
 
 ### Produce separate plots showing the relation between Ozone and Solar.R for each month (with a single loop)
-```{r plots_Ozone_Solar}
-#Just Sample Code. NOT Working, YET!
-somePlotName <- lapply(by_month, function(x) {
-    ggplot(x, aes(Ozone, Solar.R)) +
-        geom_point() +
-        geom_smooth()
+```{r plots_Ozone_Solar, warning=FALSE}
+
+library(tidyverse)
+
+plots <- lapply(month_split, function(x) {
+  ggplot(x, aes(Ozone, Solar.R)) +
+    geom_point() +
+    geom_smooth() +
+    labs(
+      title = 
+    )
 })
+
 ```
 
 ### Use a for loop to save the plots to a folder on your computer
-```{r save_plots, include = TRUE}
-#Just Sample Code. NOT Working, YET!
-dir.create(here::here("plots"))
+```{r save_plots, include = TRUE, warning=FALSE}
 
-solar_ozone <- here::here("plots",
-                          paste0("ozone",
-                                 names(by_month),
-                                 ".png"))
-solar_ozone
+dir.create(here::here("joanna_plots"))
+filenames <- here::here("joanna_plots",
+                        paste0("Month", names(month_split), ".png"))
+filenames
 
-for(i in seq_along(somePlotName)) {
-  ggsave(solar_ozone[i], # single bracket
-         somePlotName[[i]], # double bracket
+for(i in seq_along(plots)) {
+  ggsave(filenames[i], 
+         plots[[i]],
+         device = "png",
          width = 6.5,
          height = 8)
-  }
+}
+
 ```
