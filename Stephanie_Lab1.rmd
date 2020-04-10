@@ -1,6 +1,167 @@
 ---
-title: "Stephanie_Lab1"
+title: "Lab 1 "
 author: "Stephanie Gluck"
 date: "4/8/2020"
 output: html_document
 ---
+
+## The purpose of this lab is to get you working with base R looping functions while also being careful about data types.
+
+Run this code:
+```{r Data_structures, include = TRUE}
+
+set.seed(123) # Set random number generation
+
+m <- lm(mpg ~ hp + cyl + drat, mtcars)
+
+l <- list(a = list(m = matrix(1:12, ncol = 3),
+                   v = 1:7),
+          b = data.frame(student = 1:15,
+                         score = rnorm(15, 100, 10)))
+```
+
+## From the model results:
+### Extract the qr tolerance (tol)
+```{r extract_qr_tol, include = TRUE}
+
+tolerance <- m$qr$tol
+tolerance
+
+```
+
+### Extract the term labels from the model  
+*Hint:* Use str to inspect the list. This one is tricky and involves pulling an attribute from an attribute.
+```{r extract_term_labels, include = TRUE}
+
+str(m)
+
+terms <- attr(m$model, "term")
+attributes(terms)
+attr(terms, "term.labels")
+
+#alternative method, less clear 
+#attr(attr(m$model, "term"), "term.labels")
+
+```
+
+## From the list:
+### Use at least two different methods to extract m
+```{r extract_m, include = TRUE}
+
+# Method 1
+l$a$m
+
+# Method 2 
+l[["a"]][["m"]]
+
+```
+
+
+### Extract the third column of m  
+Maintain the dimensions (matrix structure).
+```{r extract_third_column_m, include = TRUE}
+
+extract <- l[["a"]][["m"]]
+
+#duse drop = FALSE to not drop the structure/dimensions 
+extract[,3, drop = FALSE]
+
+#removes structure and re-adds matrix, not the best way  
+#as.matrix(extract[,3])
+
+```
+
+### Extract the score for student 7
+```{r extract_student7_score, include = TRUE}
+
+# Method 1
+ob <- l[["b"]]
+ob
+ob[7, 2]
+
+# Method 2
+library(tidyverse)
+as.data.frame(l[["b"]]) %>% 
+  filter(student == 7)
+
+```
+
+## Loops  
+Use the “airquality” dataset, which is part of base R.
+
+### Split it by Month
+```{r split_month, include = TRUE}
+
+str(airquality)
+
+data <- split(airquality, airquality$Month)
+str(data)
+attributes(data)
+
+```
+
+### Use a for loop to calculate the mean Ozone by month (remember to remove missing data from the calculation)
+```{r mean_Ozone, include = TRUE}
+
+month <- rep(NA, length(data))
+
+for(i in seq_along(month)) {
+  month[i] <- mean(data[[i]][["Ozone"]], na.rm = TRUE)
+}
+
+month
+```
+
+### Replicate this calculation with lapply, sapply, and vapply
+```{r replicate_calculation, include = TRUE}
+
+str(data)
+
+lapply(data, function(x) mean(x$Ozone, na.rm = TRUE))
+
+sapply(data, function(x) mean(x$Ozone, na.rm = TRUE))
+
+vapply(data, function(x) mean(x$Ozone, na.rm = TRUE), FUN.VALUE = double(1))
+
+```
+
+### Produce separate plots showing the relation between Ozone and Solar.R for each month (with a single loop)
+```{r plots_Ozone_Solar}
+
+airquality_p <- lapply(data, function(x) {
+    ggplot(x, aes(Ozone, Solar.R)) +
+        geom_point() +
+        geom_smooth()
+})
+
+# I wanted to add a title to distinguish each plot but was not able to find a way that worked in the previous code so I found a workaround on Stack Overflow.
+# https://stackoverflow.com/questions/50041828/pasting-names-of-list-objects-into-a-ggplot-call-during-lapply
+
+airquality_p <- lapply(seq_along(airquality_p), function(i) { 
+  airquality_p[[i]] + 
+    ggtitle(names(airquality_p)[i])
+})
+
+airquality_p
+
+```
+
+### Use a for loop to save the plots to a folder on your computer
+```{r save_plots}
+
+dir.create(here::here("stephanie_plots"))
+
+solar_ozone <- here::here("stephanie_plots",
+                          paste0("ozone",
+                                 names(data),
+                                 ".png"))
+solar_ozone
+
+for(i in seq_along(airquality_p)) {
+  ggsave(solar_ozone[i], # single bracket
+         airquality_p[[i]], # double bracket
+         width = 6.5,
+         height = 8)
+  }
+```
+
