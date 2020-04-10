@@ -14,6 +14,7 @@ output: html_document
 
 
 ```{r Data_structures, include = TRUE}
+library(tidyverse)
 
 set.seed(123) # Set random number generation
 
@@ -62,6 +63,7 @@ zoom <- l[["a"]][["m"]]
 
 ##extract third column of m
 ```{r method_two_extract_m, include = TRUE}
+
 typeof(zoom)
 zoom
 #removes structure and re-adds matrix structure
@@ -76,7 +78,6 @@ zoom[,3, drop=FALSE]
 ### Extract the score for student 7
 ```{r extract_student7_score, include = TRUE}
 #method 1
-library(tidyverse)
 as.data.frame(l[["b"]]) %>% 
 filter(student == "7")
 
@@ -93,44 +94,80 @@ Use the “airquality” dataset, which is part of base R.
 ```{r split_month, include = TRUE}
 
 airquality
-
+month_split <- split(airquality, airquality$Month)
+str(month_split)
 ```
 
 ### Use a for loop to calculate the mean Ozone by month (remember to remove missing data from the calculation)
 ```{r mean_Ozone, include = TRUE}
+
+d2 <- rep(NA, length(month_split))
+
+for(i in seq_along(d2)) { #pre-determines the number of iterations (d2 = length 5, so 5 iterations)
+  d2[i] <- mean(month_split[[i]][["Ozone"]], na.rm = TRUE) #i is already defined, so the mean function runs 5 times through the month_split dataset
+}
+  
+d2 #got to call d2 because we filled it with the means 
+
+  
 
 ```
 
 ### Replicate this calculation with lapply, sapply, and vapply
 ```{r replicate_calculation, include = TRUE}
 
+#lapply
+l <-lapply(month_split, function(x) mean(x$Ozone, na.rm=TRUE))
+str(l)
+
+#sapply simplifies output when possible
+s <- sapply(month_split, function(x) mean(x$Ozone, na.rm=TRUE))
+str(s) #check out format of output
+
+#vapply requires that we specify output type
+v <- vapply(month_split, function(x) mean(x$Ozone, na.rm=TRUE), FUN.VALUE = double(1))
+str(v)
+
 ```
 
 ### Produce separate plots showing the relation between Ozone and Solar.R for each month (with a single loop)
 ```{r plots_Ozone_Solar}
-#Just Sample Code. NOT Working, YET!
-somePlotName <- lapply(by_month, function(x) {
-    ggplot(x, aes(Ozone, Solar.R)) +
-        geom_point() +
-        geom_smooth()
+
+# t  <- rep(NA, length(month_split))
+# titles <- for(i in seq_along(t)) {
+#   t[i] <- paste0(month_split[i][["Month"]])
+#   }
+# t
+
+plots <- lapply(month_split, function(x) {
+  ggplot(x, aes(Ozone, Solar.R)) +
+    geom_point() +
+    geom_smooth() +
+    labs(
+      title = 
+    )
 })
+
+
 ```
 
 ### Use a for loop to save the plots to a folder on your computer
 ```{r save_plots, include = TRUE}
-#Just Sample Code. NOT Working, YET!
-dir.create(here::here("plots"))
 
-solar_ozone <- here::here("plots",
-                          paste0("ozone",
-                                 names(by_month),
-                                 ".png"))
-solar_ozone
+dir.create(here::here("akhila_plots"))
+filenames <- here::here("akhila_plots",
+                        paste0("Month", names(month_split), ".png"))
+filenames
 
-for(i in seq_along(somePlotName)) {
-  ggsave(solar_ozone[i], # single bracket
-         somePlotName[[i]], # double bracket
+for(i in seq_along(plots)) {
+  ggsave(filenames[i], 
+         plots[[i]],
+         device = "png",
          width = 6.5,
          height = 8)
-  }
+}
+
+
 ```
+
+
