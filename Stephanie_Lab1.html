@@ -714,6 +714,14 @@ month</code></pre>
         geom_smooth()
 })
 
+
+airquality_p &lt;- lapply(data, function(x) {
+    ggplot(x, aes(Ozone, Solar.R)) +
+        geom_point() +
+        geom_smooth() +
+    labs(title = )
+})
+
 # I wanted to add a title to distinguish each plot but was not able to find a way that worked in the previous code so I found a workaround on Stack Overflow.
 # https://stackoverflow.com/questions/50041828/pasting-names-of-list-objects-into-a-ggplot-call-during-lapply
 
